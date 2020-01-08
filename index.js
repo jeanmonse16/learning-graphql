@@ -2,7 +2,6 @@
 
 require('dotenv').config()
 const express = require('express')
-const DB = require('./lib/db')
 const { makeExecutableSchema } = require('graphql-tools')
 const expressGql = require('express-graphql')
 const { readFileSync } = require('fs')
