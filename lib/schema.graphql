@@ -4,6 +4,8 @@ enum Level{
   avanzado
 }
 
+union QueryResult = Courses | Students | Monitor
+
 type Courses {
   _id: ID!
   title: String!
@@ -14,10 +16,24 @@ type Courses {
   level: Level
 }
 
-type Students {
+interface Person {
   _id: ID!
   name: String!
   email: String!
+}
+
+type Students implements Person{
+  _id: ID!
+  name: String!
+  email: String!
+  avatar: String
+}
+
+type Monitor implements Person{
+  _id: ID!
+  name: String!
+  email: String!
+  phone: String
 }
 
 type Query {
@@ -26,9 +42,11 @@ type Query {
   "Devuelve un curso"
   getCourse(id: ID!): Courses
   "Devuelve todos los estudiantes"
-  getStudents: [Students],
+  getPersons: [Person],
   "Devuelve un estudiante"
-  getStudent(id: ID!): Students
+  getPerson(id: ID!): Person
+  "Devolvera datos de acuerdo a los campos que contengan las palabras pasadas por parametro"
+  SearchKeywords(keywords: String!): [QueryResult]
 }
 
 input CoursesInput {
@@ -47,14 +65,18 @@ input CoursesEditInput {
   level: Level
 }
 
-input StudentsInput {
+input PersonsInput {
   name: String!
   email: String!
+  phone: String
+  avatar: String
 }
 
-input StudentsEditInput {
+input PersonsEditInput {
   name: String
   email: String
+  phone: String
+  avatar: String
 }
 
 type Mutation {
@@ -63,8 +85,8 @@ type Mutation {
   "Edita un curso"
   editCourse(_id: ID!, input: CoursesEditInput!): Courses,
   deleteCourse(_id: ID!): Courses,
-  newStudent(input: StudentsInput!): Students,
-  editStudent(_id: ID!, input: StudentsEditInput!): Students,
+  newPerson(input: PersonsInput!): Students,
+  editPerson(_id: ID!, input: PersonsEditInput!): Students,
   deleteStudent(_id: ID!): Students,
   "Agregar personas a un curso"
   addStudent(courseId: ID!, studentId: ID!): Courses
